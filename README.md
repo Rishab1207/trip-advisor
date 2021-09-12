@@ -1,34 +1,62 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Flow
 
-## Getting Started
+1. When user opens up the web app the default location is set to user location
 
-First, run the development server:
+- This is achieved by using `useEffect` hook which basically runs when the component is mounted for the first time
 
-```bash
-npm run dev
-# or
-yarn dev
+```js
+useEffect(() => {
+	navigator.geolocation.getCurrentPosition(
+		({ coords: { latitude, longitude } }) => {
+			setCoordinates({ lat: latitude, lng: longitude });
+		}
+	);
+}, []);
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. This peice of code is first runs on mount with the bounds inialised to user's current location and whenver the value of `type` or `bounds` changes it then make anbther API call to `Rapid API` to fetch the new results
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+```js
+useEffect(() => {
+	if (bounds.sw && bounds.ne) {
+		setLoading(true);
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+		getPlacesData(type, bounds.sw, bounds.ne).then((data) => {
+			setPlaces(
+				data?.filter(
+					(place) => place.name && place.num_reviews > 0 && place.photo
+				)
+			);
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+			setLoading(false);
+		});
+	}
+}, [type, bounds]);
+```
 
-## Learn More
+1. The default category to `fetch` is set to `restaurants` which can be changed to `famous attractions`, `hotels`
 
-To learn more about Next.js, take a look at the following resources:
+1. There are mainly 3 components in this App
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   1. Header
+   1. ListDetails
+   1. Maps
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Header
 
-## Deploy on Vercel
+### How is Google Search working?
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- In `Header` Component, I've an `AutoComplete` Component which is `imported` from `react-google-maps`
+- In this I've passed two event handlers `onLoad` and `onPlaceChanged`
+- `onLoad` is a callback function which runs when the `autocomplete` instance has been loaded
+- `onPlaceChange` this is an event handler which is fired when a PlaceResult is made available for a Place which the user has selected
+- After I get the results of the place which the user has selected then I first extract the new coordinates (latitude and longitude) and then update the `center` attribute in the `Map` component which then updates the UI
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### How the cards on the map are changing when the user scrolls through the map
+
+## Tasks
+
+- Make responsive
+- rating
+- Filter tags
+- Axios request
