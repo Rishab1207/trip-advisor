@@ -13,7 +13,6 @@ export default function Home() {
 	const [loading, setLoading] = useState(false);
 	const [oldPlaces, setOldPlaces] = useState([]);
 
-	//
 	const [type, setType] = useState("restaurants");
 	const [rating, setRating] = useState("");
 
@@ -32,10 +31,10 @@ export default function Home() {
 			(place) => Number(place.rating) > rating
 		);
 
+		filteredPlacesByRating.sort((a, b) => Number(b.rating) - Number(a.rating));
+
 		setPlaces(filteredPlacesByRating);
 	}, [rating]);
-
-	useEffect(() => console.log({ oldPlaces }), [oldPlaces]);
 
 	useEffect(() => {
 		console.log({ coordinates, bounds });
@@ -48,9 +47,11 @@ export default function Home() {
 					(place) => place.name && place.num_reviews > 0 && place.photo
 				);
 
-				setPlaces((prev) => allPlaces);
+				allPlaces?.sort((a, b) => Number(b.rating) - Number(a.rating));
 
-				setOldPlaces((prev) => allPlaces);
+				setPlaces(allPlaces);
+
+				setOldPlaces(allPlaces);
 
 				setLoading(false);
 			});
@@ -65,7 +66,11 @@ export default function Home() {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
-			<Grid gridTemplateColumns="repeat(12, 1fr)" height="100%">
+			<Grid
+				gridTemplateColumns="repeat(12, 1fr)"
+				height="100%"
+				gridTemplateAreas={""}
+			>
 				{/* List */}
 				<GridItem
 					colSpan={{ sm: 12, md: 4 }}

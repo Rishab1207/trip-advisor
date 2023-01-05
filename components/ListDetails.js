@@ -5,14 +5,7 @@ import { Spinner } from "@chakra-ui/spinner";
 import React from "react";
 import PlaceDetails from "./PlaceDetails";
 
-const ListDetails = ({
-	places,
-	isLoading,
-	type,
-	setType,
-	rating,
-	setRating,
-}) => {
+const ListDetails = ({ places, isLoading, setType, rating, setRating }) => {
 	return (
 		<Stack spacing={5}>
 			<Text fontSize="lg" fontWeight="semibold">
@@ -22,7 +15,6 @@ const ListDetails = ({
 			<FormControl>
 				<FormLabel>Type</FormLabel>
 				<Select
-					placeholder="Select option"
 					variant="filled"
 					onChange={(e) => setType(e.target.value)}
 					defaultValue="restaurants"

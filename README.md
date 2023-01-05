@@ -57,6 +57,4 @@ useEffect(() => {
 ## Tasks
 
 - Make responsive
-- rating
-- Filter tags
 - Axios request
